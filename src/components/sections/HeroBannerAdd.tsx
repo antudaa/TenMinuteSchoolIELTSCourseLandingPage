@@ -23,7 +23,7 @@ export const HeroBannerAdd = () => {
       {/* Large device image */}
       <div className="hidden md:block">
         <Image
-          src="/assets/KidsEnglishNotification.jpg"
+          src="https://cdn.10minuteschool.com/images/dasktop_banner_1753270611489.png"
           width={1600}
           height={500}
           alt="Kids English Ad - Large"
@@ -34,7 +34,7 @@ export const HeroBannerAdd = () => {
       {/* Small device image */}
       <div className="block md:hidden">
         <Image
-          src="/assets/KidsEnglishNotificationsm.jpg"
+          src="https://cdn.10minuteschool.com/images/mobile_banner_1753355543677.png"
           width={800}
           height={400}
           alt="Kids English Ad - Small"
