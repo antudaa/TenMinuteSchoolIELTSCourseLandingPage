@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useCourseData } from '@/hooks/useCourseData';
 import { CourseChecklistItem, CourseMedia } from '@/types/api';
@@ -11,9 +11,25 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
+import { HeroSkeleton } from '../skeleton/HeroSkeleton';
+
+const useIsMediumUp = () => {
+  const [isMediumUp, setIsMediumUp] = useState(false);
+
+  useEffect(() => {
+    const checkSize = () => setIsMediumUp(window.innerWidth >= 768);
+    checkSize();
+    window.addEventListener("resize", checkSize);
+    return () => window.removeEventListener("resize", checkSize);
+  }, []);
+
+  return isMediumUp;
+};
 
 export const Hero = () => {
   const { data, isLoading } = useCourseData();
+  const [showFloatingSidebar, setShowFloatingSidebar] = useState(false);
+  const isMediumUp = useIsMediumUp();
 
   const rawMedia: CourseMedia[] = data?.data?.media ?? [];
   const checklist: CourseChecklistItem[] = data?.data?.checklist ?? [];
@@ -24,7 +40,75 @@ export const Hero = () => {
   const [desktopPlayingIndex, setDesktopPlayingIndex] = useState<number | null>(null);
   const [desktopActiveSlide, setDesktopActiveSlide] = useState(0);
 
-  if (isLoading || !data) return <p className="text-center py-8">Loading...</p>;
+  useEffect(() => {
+    const handleScroll = () => {
+      const triggerHeight = 1000; // adjust based on layout
+      setShowFloatingSidebar(window.scrollY > triggerHeight);
+    };
+
+    if (isMediumUp) {
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    }
+  }, [isMediumUp]);
+
+  if (isLoading || !data) return <HeroSkeleton />;
+
+  const PriceAndChecklist = () => (
+    <>
+      <div className="w-full md:max-w-[330px] lg:max-w-[400px] order-2 bg-white right-0 md:top-[50px] border p-4 shadow-lg z-10">
+        <div className="flex mb-4">
+          <div className="text-2xl font-semibold text-black">৳1000</div>
+          <span className="inline-flex items-center">
+            <del className="ml-2 text-base text-gray-500">৳1500</del>
+            <div className="relative ml-5 inline-block">
+              <div className="bg-[#F76C5E] text-white text-sm font-semibold px-3 py-1 pr-4 pl-6 rounded-r-md relative">
+                <span className="absolute left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full z-10" />
+                500 ৳ ছাড়
+              </div>
+              <div className="absolute left-[-10px] top-1/2 -translate-y-1/2 w-0 h-0 border-t-[14px] border-t-transparent border-b-[14px] border-b-transparent border-r-[10px] border-r-[#F76C5E]" />
+            </div>
+          </span>
+        </div>
+
+        <button className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-700 rounded cursor-pointer w-full">
+          Enroll
+        </button>
+
+        <div className="mt-4">
+          <p className="mb-2 text-xl font-semibold text-black">এই কোর্সে যা থাকছে</p>
+          <ul className="space-y-3 text-[#111827] text-sm">
+            {checklist.map((item) => (
+              <li key={item.id} className="flex gap-2 items-start">
+                <Image src={item.icon} alt="icon" width={20} height={20} className="mt-0.5" />
+                <span>{item.text}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      {/* Support Footer*/}
+      <p className="justify-between hidden mt-4 text-sm text-center text-gray-400 md:flex md:flex-col lg:flex lg:flex-row">
+        <span>কোর্সটি সম্পর্কে বিস্তারিত জানতে</span>
+        <span className="flex items-center justify-center ml-2 underline cursor-pointer text-green-600">
+          <svg
+            stroke="currentColor"
+            fill="currentColor"
+            strokeWidth="0"
+            viewBox="0 0 512 512"
+            height="1em"
+            width="1em"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M497.39 361.8l-112-48a24 24 0 0 0-28 6.9l-49.6 60.6A370.66 370.66 0 0 1 130.6 204.11l60.6-49.6a23.94 23.94 0 0 0 6.9-28l-48-112A24.16 24.16 0 0 0 122.6.61l-104 24A24 24 0 0 0 0 48c0 256.5 207.9 464 464 464a24 24 0 0 0 23.4-18.6l24-104a24.29 24.29 0 0 0-14.01-27.6z"></path>
+          </svg>
+          <span className="ml-1">ফোন করুন (16910)</span>
+        </span>
+      </p>
+    </>
+
+  );
 
   const renderMediaItem = (
     item: CourseMedia,
@@ -268,6 +352,31 @@ export const Hero = () => {
                     ))}
                   </ul>
                 </div>
+
+                <p className="justify-between hidden px-4 pb-4 mt-4 text-sm text-center text-gray-400 md:flex md:flex-col lg:flex lg:flex-row">
+                  <span>কোর্সটি সম্পর্কে বিস্তারিত জানতে</span>
+                  <span className="flex items-center justify-center ml-2 underline cursor-pointer text-green-600">
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth="0"
+                      viewBox="0 0 512 512"
+                      height="1em"
+                      width="1em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M497.39 361.8l-112-48a24 24 0 0 0-28 6.9l-49.6 60.6A370.66 370.66 0 0 1 130.6 204.11l60.6-49.6a23.94 23.94 0 0 0 6.9-28l-48-112A24.16 24.16 0 0 0 122.6.61l-104 24A24 24 0 0 0 0 48c0 256.5 207.9 464 464 464a24 24 0 0 0 23.4-18.6l24-104a24.29 24.29 0 0 0-14.01-27.6z" />
+                    </svg>
+                    <span className="ml-1">ফোন করুন (16910)</span>
+                  </span>
+                </p>
+
+
+                {isMediumUp && showFloatingSidebar && (
+                  <div className="fixed z-50 md:top-24 md:bottom-auto animate-fade-in-up">
+                    <PriceAndChecklist />
+                  </div>
+                )}
               </div>
             </div>
           </section>
