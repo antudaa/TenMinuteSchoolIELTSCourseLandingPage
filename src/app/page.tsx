@@ -1,9 +1,20 @@
-import HeroBannerAdd from "@/components/sections/HeroBannerAdd";
+import ChatButton from "@/components/common/Buttons/ChatButton";
+import WhatsAppButton from "@/components/common/Buttons/WhatsAppButton";
+import CourseDetails from "@/components/sections/CourseDetails";
+import { Hero } from "@/components/sections/Hero";
+import { HeroBannerAdd } from "@/components/sections/HeroBannerAdd";
+import RecommendedCourses from "@/components/sections/RecommendedCourses";
 
-export default function Home() {
+export default async function Home() {
+
   return (
-    <section>
+    <>
       <HeroBannerAdd />
-    </section>
+      <Hero />
+      <CourseDetails />
+      <RecommendedCourses />
+      <ChatButton />
+      <WhatsAppButton />
+    </>
   );
-}
+};

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { X } from 'lucide-react'; // or use another icon if needed
 
-const HeroBannerAdd = () => {
+export const HeroBannerAdd = () => {
   const [isVisible, setIsVisible] = useState(true);
 
   if (!isVisible) return null;
@@ -44,5 +44,3 @@ const HeroBannerAdd = () => {
     </div>
   );
 };
-
-export default HeroBannerAdd;
